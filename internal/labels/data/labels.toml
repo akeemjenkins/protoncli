@@ -1,0 +1,265 @@
+# Canonical label taxonomy for protoncli.
+# Each entry defines a canonical label with a short description and the
+# set of aliases that normalize to it. Aliases are matched case-insensitively
+# and after stripping "Labels/" prefixes, whitespace, and slashes.
+
+[labels.Orders]
+description = "order confirmations, shipments, delivery tracking, package updates"
+aliases = [
+  "order", "orders", "orderconfirmation", "orderconfirmed",
+  "ordertracking", "orderupdate", "orderupdates",
+  "shipping", "shipment", "shipped", "shippedproducts",
+  "shippinginfo", "shippingupdate", "shippingnotification",
+  "shipmenttracking", "shipmentupdate", "shipmentnotification",
+  "delivery", "deliverynotification", "deliveryupdate",
+  "deliveryconfirmation", "deliveryreminder",
+  "tracking", "trackingnotice", "trackingupdate", "trackinginformation",
+  "package", "packagedelivery", "packageupdate", "packagetracking",
+  "packagenotification", "packageshipment",
+  "amazon", "amazondelivery", "amazonreturns",
+  "usps", "uspsdelivery", "uspsinformeddelivery", "uspsnotification",
+  "uspstracking", "uspsupdate", "uspsnews",
+  "fedex", "ups",
+  "automatedemail", "automated", "automateddelivery",
+  "automatedreply", "automatedresponse",
+  "return", "preorder", "purchase", "purchasereceipt",
+  "productorder", "informeddelivery",
+]
+
+[labels.Finance]
+description = "bills, payments, banking, receipts, invoices, statements"
+aliases = [
+  "finance", "finances", "financial",
+  "bill", "bills", "billing", "billstatement",
+  "payment", "paymentconfirmation", "paymentnotification", "paymentreceipt",
+  "banking", "bankalert", "bankingalert", "bankstatement",
+  "receipt", "invoice", "mortgage", "mortgagenotification",
+  "statement", "statements", "estatement", "financialstatement",
+  "utilitybill", "subscriptionpayment", "transactionconfirmation",
+  "taxnotice", "deposit", "remotedeposit",
+  "creditcard", "creditcardstatement", "creditunion",
+  "loan", "loans", "investment", "investmentopportunity",
+  "financialnews", "financialpromotion",
+  "chase", "rewards", "cashback",
+]
+
+[labels.Newsletters]
+description = "newsletters, mailing lists, digests, subscription content"
+aliases = [
+  "newsletter", "newsletters", "mailinglist",
+  "mailinglistcandidate", "newsletterpromo",
+  "digest", "messagingdigest",
+  "subscription", "subscriptionconfirmation",
+  "weeklyreport", "updates", "unsubscribe",
+  "announcement", "companyupdate", "companynews",
+  "companynewsletter", "companycommunication",
+  "organizationnews", "communitynews", "communityupdate",
+  "communityupdates", "communityannouncement",
+  "localnews", "citynews", "coloradonews",
+  "broomfield", "broomfieldcounty", "broomfieldcountynews",
+  "parknewsletter", "lonesurvivalist", "lonesurvivalistnewsletter",
+]
+
+[labels.Promotions]
+description = "deals, sales, marketing emails, coupons, ads, holiday sales"
+aliases = [
+  "promotion", "promotions", "promotional",
+  "promotionalemail", "promotionaloffer", "promo", "promoemail",
+  "marketing", "marketingemail", "marketingmaterial",
+  "deals", "deal",
+  "sale", "sales", "salespromo", "salespromotion",
+  "salenotification", "flashsale",
+  "coupon", "ads", "advertisement", "advertising",
+  "affiliate", "affiliatemarketing",
+  "shopping", "shop", "store",
+  "shoppingcart", "shoppingguide", "shoppingoffer",
+  "retail", "retailstore", "ecommerce", "e-commerce",
+  "product", "productadvertisement", "productpromotion",
+  "productrelease", "productupdate", "productreview",
+  "productoffer", "productdetails", "productrelated",
+  "productpitch",
+  "blackfriday", "blackfridaydeals", "blackfridaysale",
+  "cybermonday", "cybermondaysale",
+  "holidaygiftguide", "giftguide", "holiday",
+  "halloween", "givingtuesday",
+  "discount", "discounts", "bargain",
+  "freebie", "freeoffer", "freestuff",
+  "limitedtimeoffer", "upgradeoffer",
+  "shoes", "fashion", "outdoorgear",
+  "skiing", "skiresort", "sports",
+  "survivalist", "preservedgoods",
+  "trekbicycle", "trekbicyclemarketing", "trekbicyclenews",
+  "veefriends", "wefunderdeal",
+  "collectibles", "toppschrome", "sapphirebox",
+  "rakuten", "gumroad", "dokodemo",
+  "kitchenessentials", "food", "recipe", "baking",
+  "businesspromotion", "eventpromotion", "hotelpromotion",
+  "mileagepluspromotion", "cloudflarepromotion", "schoolpromo",
+  "gamepromotion", "unsolicitedemail",
+]
+
+[labels.Jobs]
+description = "job alerts, career opportunities, recruiter messages, LinkedIn jobs"
+aliases = [
+  "job", "jobs", "jobalert", "jobposting", "jobpostings",
+  "joblisting", "jobopening", "jobsearch", "jobnotification",
+  "joboffer", "jobadvertisement",
+  "career", "careers", "careeradvertisement", "careerdevelopment",
+  "careerad", "careeradvice", "careeradvisement",
+  "careernews", "careernotification", "careeropportunity", "careersearch",
+  "linkedin", "linkedinnotification", "linkedinjob", "inmail",
+  "recruiter", "recruitment", "recruitmentemail",
+  "softwareengineer", "itjobdescription",
+  "remotejobopening", "remoteworkopportunity",
+  "resume", "resumebuddy", "resumenotification",
+  "professionalnetwork", "networking", "work",
+]
+
+[labels.Social]
+description = "social media notifications"
+aliases = [
+  "social", "socialmedia",
+  "facebook", "twitter", "nextdoor", "nextdoornotification",
+  "twitch", "streaming", "github",
+  "news", "newsarticle", "publicnews", "media",
+  "community", "communityevent", "communityflyer", "communityresource",
+  "local", "localevent", "localprograms",
+  "volunteeropportunity", "disasterrelief",
+  "politics", "government", "federal", "federalnews",
+  "citycouncil", "councilminutes", "planningcommission",
+  "publichearing", "publicsquare",
+  "colorado", "coloradovoteraccessmodernizedelectionscommission",
+  "neighborhoodmeeting", "boardnominations",
+]
+
+[labels.Services]
+description = "utilities, ISP, service providers, technical support, outage alerts"
+aliases = [
+  "service", "services", "servicenotification",
+  "servicealert", "serviceinterruption", "serviceplan",
+  "utilities", "utility", "utilitynotification", "utilityalert",
+  "isp", "internet",
+  "comcast", "comcastbusiness",
+  "cloudflare", "cloudflare-update", "cloudflarenotification", "cloudflarereminder",
+  "technicalissue", "technicalsupport", "technical",
+  "technicalnotice", "technicalnotification",
+  "technicalupdate", "technicalupdates",
+  "outage", "outagealert", "itoutage",
+  "poweroutage", "poweroutagealert",
+  "notification", "bounce", "bouncerate",
+  "support", "customerservice", "customersupport",
+  "maintenance", "vehiclemaintenance",
+  "softwareupdate", "tollservice", "infrastructure",
+  "error", "internalalert",
+  "awshealthevent", "fly.io",
+]
+
+[labels.Health]
+description = "health, wellness, medical, appointments"
+aliases = [
+  "health", "wellness", "medical", "healthcare",
+  "healthandwellness", "healthreport",
+  "healthsupplement", "healthsupplements", "healthsupplies",
+  "naturalhealth", "nutrition",
+  "appointment", "appointments", "appointmentreminder",
+  "fitness", "fitnesscenter", "personaltraining",
+  "urgentcare", "pediatriccare",
+  "travelmedicine", "jasemedical",
+  "massage", "bodywork", "relaxation",
+  "cancer", "biology",
+]
+
+[labels.Travel]
+description = "flights, hotels, bookings, reservations, travel confirmations"
+aliases = [
+  "travel", "flight", "flights",
+  "hotel", "hotelreservation", "hyatt", "hospitality",
+  "booking", "bookingconfirmation", "reservation",
+  "event", "events", "eventinvitation", "eventreminder",
+  "tour", "recreation",
+  "unitedmileageplus", "mileageplus", "mileagelist",
+  "aeroplan", "aircanada",
+]
+
+[labels.Security]
+description = "2FA codes, password resets, login alerts, verification codes"
+aliases = [
+  "security", "securitynotification", "securitynotice",
+  "securityalert", "securitybreach", "securityphishing", "securitywarning",
+  "2fa", "2faupdate", "twosteplogin",
+  "verification", "verificationcode", "accountverification",
+  "passwordreset", "loginalert", "login", "loginnotification",
+  "spam", "scams", "suspiciousnotification",
+  "tmobile", "cloaked",
+  "privacypolicyupdate",
+]
+
+[labels.Signups]
+description = "account registrations, welcome emails, account setup confirmations, domain registrations"
+aliases = [
+  "signups",
+  "account", "accounts", "accountupdate",
+  "accountactivation", "accountactivity", "accountcreation",
+  "accountinformation", "accountmanagement", "accountnotification",
+  "accountrequest", "accountsummary", "accountsetup",
+  "newaccount", "newuser",
+  "registration", "registrationreminder", "registrationannouncement",
+  "registrar", "registrarreminders",
+  "welcome", "welcomeemail", "onboarding",
+  "notice", "reminder", "reminders",
+  "confirmation", "action",
+  "domain", "domainregistration", "domainexpiration",
+  "domaininfo", "domaininfonotification", "domainmanagement",
+  "domainnotification", "domainreminder", "domainrenewal",
+  "domainupdate", "domainsuspension", "deleteddomain",
+  "icanncompliance",
+  "sslcertificate", "sslrenewal", "ssl-renewal", "ssl_renewal",
+  "autorenewal", "autorenewalreminder", "renewalnotice", "renewalnotification",
+  "business", "businesspartner", "businessannouncement",
+  "businesscommunication", "businessemail", "businessexpense",
+  "businessnews", "businessnotification", "businessopportunity",
+  "businessservice", "businessappointment", "businesshours", "businessreview",
+  "company", "companyemail", "commercial", "commercials",
+  "meeting", "meetingreminder", "meetingreminders", "meetingminutes",
+  "school", "schoolannouncement", "schoolcommunication", "schoolflyer",
+  "japaneseschool", "broomfieldstem", "stem",
+  "gameupdate", "gaming", "game",
+  "spintycoon", "ghostbusters",
+  "cryptocurrency", "crypto", "cryptomarket", "cryptonews",
+  "applianceserviceplan", "bosch", "boschappliance",
+  "boschapplianceplan", "bshserviceplannotification",
+  "marketplace", "auction", "auctionnotice", "auctionsite",
+  "auctioneersmarketing", "bidding", "biddingnotice",
+  "ironplanet", "govplanet", "ritchiebros", "ritchiebros.",
+  "heavymachinery", "machinesales", "construction", "constructionequipment",
+  "equipment", "surplus", "surplusitems",
+  "vendor", "vendorconfirmation",
+  "startup", "techstartup", "tech", "technology",
+  "ai", "openai", "cursorpro",
+  "enterprisearchitecture", "robotics",
+  "thankyou", "feedback", "rating",
+  "trading", "trello", "gusto", "paddle", "flowapp",
+  "trend", "un", "uncategorized", "unclear", "unknown",
+  "general", "generalinformation", "miscellaneous", "informational",
+  "webinar", "conference", "consultation",
+  "websiteupdate", "westminstercouncil",
+  "solar", "survey", "trafficheatmap",
+  "ahrefs", "analyticsreport", "dataanalytics",
+  "arxdataexport", "report", "reports", "marketupdate",
+  "ancestrydna", "dnatest", "dnatestkit",
+  "arbortectreeservice", "fastlist",
+  "hp", "phones", "phoneissue",
+  "insurance", "autorefinancing", "legalnotice",
+  "membership", "premiumservice", "premiumservices",
+  "personalizedcontent", "personaldevelopment",
+  "project", "projectupdate", "operations", "productivity",
+  "publishing", "puc", "flyer", "flyers",
+  "administrative", "official", "communication",
+  "messagenotification", "newsender",
+  "currentevents", "economy", "midlife",
+  "ehealthcommissionnews", "grip", "lizardman", "conspiracytheory",
+  "guest", "noexplore", "ps", "catalyst",
+  "closure", "newhome", "homes", "realestate", "propertylisting",
+  "parentingresource", "parkandrec", "roomtogrow", "relationshiptips",
+  "scheduling", "appsignup",
+]

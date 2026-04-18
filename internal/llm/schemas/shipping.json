@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "carrier": { "type": "string" },
+    "tracking_number": { "type": "string" },
+    "status": { "type": "string" },
+    "expected_delivery": { "type": "string" },
+    "order_number": { "type": "string" }
+  },
+  "required": ["carrier", "tracking_number", "status", "expected_delivery", "order_number"]
+}

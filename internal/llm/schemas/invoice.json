@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "amount": { "type": "number" },
+    "currency": { "type": "string" },
+    "vendor": { "type": "string" },
+    "invoice_number": { "type": "string" },
+    "due_date": { "type": "string" },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string" },
+          "amount": { "type": "number" }
+        },
+        "required": ["description", "amount"]
+      }
+    }
+  },
+  "required": ["amount", "currency", "vendor", "invoice_number", "due_date", "line_items"]
+}

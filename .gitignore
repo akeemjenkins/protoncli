@@ -1,0 +1,25 @@
+.DS_Store
+.idea/
+.vscode/
+
+# build artifacts
+/bin/
+/dist/
+
+# local state
+/.protoncli/
+*.db
+
+# logs/reports
+/reports/
+/classify.log
+/classify.log.bak
+*.out
+coverage.html
+
+# reference subtrees kept for dev, not shipped
+/proton-bridge/
+/cli/
+
+# stale dev artifacts
+/classification-dry-run-review.md

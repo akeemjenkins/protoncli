@@ -1,0 +1,129 @@
+# GoReleaser v2 config. Triggered by the release.yml workflow on v*.*.* tags.
+# See https://goreleaser.com for documentation.
+version: 2
+
+project_name: protoncli
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: protoncli
+    main: ./cmd/protoncli
+    binary: protoncli
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.ShortCommit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: default
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - NOTICE
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  use: github-native
+  sort: asc
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\(.+\))??!?:.+$'
+      order: 0
+    - title: Fixes
+      regexp: '^.*?fix(\(.+\))??!?:.+$'
+      order: 1
+    - title: Dependencies
+      regexp: '^.*?deps(\(.+\))??!?:.+$'
+      order: 2
+    - title: Other
+      order: 999
+
+sboms:
+  - artifacts: archive
+
+# Keyless signing via cosign + GitHub OIDC. Signs checksums.txt only;
+# verifying checksums.txt transitively verifies every archive.
+signs:
+  - cmd: cosign
+    env:
+      - COSIGN_EXPERIMENTAL=1
+    certificate: "${artifact}.pem"
+    args:
+      - sign-blob
+      - "--yes"
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+    artifacts: checksum
+    output: true
+
+homebrew_casks:
+  - repository:
+      owner: akeemjenkins
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    directory: Casks
+    homepage: "https://github.com/akeemjenkins/protoncli"
+    description: "Local-only Proton Mail inbox classifier (IMAP + Ollama)"
+    license: "Apache-2.0"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    binaries:
+      - protoncli
+    skip_upload: auto
+
+release:
+  github:
+    owner: akeemjenkins
+    name: personal-proton
+  draft: false
+  prerelease: auto
+  mode: append
+  name_template: "v{{ .Version }}"
+  footer: |
+    ---
+    **Verifying a release**
+
+    1. Download `checksums.txt`, `checksums.txt.sig`, and `checksums.txt.pem`.
+    2. Verify the signature:
+       ```sh
+       cosign verify-blob \
+         --certificate checksums.txt.pem \
+         --signature   checksums.txt.sig \
+         --certificate-identity-regexp 'https://github.com/akeemjenkins/protoncli' \
+         --certificate-oidc-issuer     'https://token.actions.githubusercontent.com' \
+         checksums.txt
+       ```
+    3. Verify the archive: `sha256sum -c checksums.txt`.

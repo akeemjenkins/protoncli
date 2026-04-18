@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "subject": { "type": "string" },
+    "start": { "type": "string" },
+    "end": { "type": "string" },
+    "location": { "type": "string" },
+    "attendees": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "agenda": { "type": "string" }
+  },
+  "required": ["subject", "start", "end", "location", "attendees", "agenda"]
+}
