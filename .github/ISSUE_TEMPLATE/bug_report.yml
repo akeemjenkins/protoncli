@@ -1,0 +1,70 @@
+name: Bug report
+description: Report a problem with protoncli
+title: "[bug]: "
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill out the fields below so we can reproduce and fix it.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Short description
+      description: One-line summary of the problem.
+      placeholder: "e.g. protoncli classify crashes when run against an empty mailbox"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal steps to reproduce the issue. Include commands, config, and inputs where possible.
+      placeholder: |
+        1. Run `protoncli ...`
+        2. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior / logs
+      description: What actually happened? Paste relevant logs, stack traces, or screenshots.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please provide:
+          - Output of `protoncli --version`
+          - Operating system and version
+          - Go version (`go version`) if building from source
+      placeholder: |
+        protoncli version: v0.1.0
+        OS: macOS 14.5
+        Go: go1.25.5
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else that might help us understand the issue.
+    validations:
+      required: false

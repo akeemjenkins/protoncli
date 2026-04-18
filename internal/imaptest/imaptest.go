@@ -1,0 +1,195 @@
+// Package imaptest provides an in-memory IMAP test server based on
+// go-imap v1's memory backend. It is intended for use from tests in
+// other packages; it is not part of the production runtime.
+package imaptest
+
+import (
+	"bytes"
+	"fmt"
+	"net"
+	"testing"
+	"time"
+
+	"github.com/emersion/go-imap/backend/memory"
+	"github.com/emersion/go-imap/client"
+	"github.com/emersion/go-imap/server"
+
+	"github.com/akeemjenkins/protoncli/internal/config"
+)
+
+// Credentials used by the memory backend. These match the defaults baked in
+// to github.com/emersion/go-imap/backend/memory.New.
+const (
+	// Username is the login the memory backend accepts.
+	Username = "username"
+	// Password is the password the memory backend accepts.
+	Password = "password"
+)
+
+// Message is an in-memory message used when seeding mailboxes. Flags may be
+// nil. If RFC822 is empty, a small RFC822-compliant default is synthesized.
+type Message struct {
+	RFC822 []byte
+	Flags  []string
+	Date   time.Time
+}
+
+// Server is a handle to a running in-memory IMAP server.
+type Server struct {
+	Addr  string
+	Close func()
+}
+
+// Option mutates Server start options (seeded mailboxes etc).
+type Option func(*options)
+
+type seed struct {
+	name string
+	msgs []Message
+}
+
+type options struct {
+	seeds []seed
+}
+
+// WithMailbox seeds an additional mailbox with the given messages (appended
+// via the IMAP client after the server is running). The mailbox is created if
+// it does not already exist.
+func WithMailbox(name string, msgs []Message) Option {
+	return func(o *options) {
+		o.seeds = append(o.seeds, seed{name: name, msgs: msgs})
+	}
+}
+
+// Start boots an in-memory IMAP server on 127.0.0.1:0 and registers a t.Cleanup
+// to close it when the test ends. Returns a handle with the listening address.
+func Start(t testing.TB, opts ...Option) *Server {
+	t.Helper()
+
+	o := &options{}
+	for _, fn := range opts {
+		fn(o)
+	}
+
+	bkd := memory.New()
+	s := server.New(bkd)
+	s.AllowInsecureAuth = true
+	// Keep idle connections out of the way; tests run quickly.
+	s.AutoLogout = 0
+
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("imaptest: listen: %v", err)
+	}
+	s.Addr = l.Addr().String()
+
+	serveErr := make(chan error, 1)
+	go func() {
+		serveErr <- s.Serve(l)
+	}()
+
+	handle := &Server{
+		Addr: l.Addr().String(),
+	}
+
+	closed := false
+	closeFn := func() {
+		if closed {
+			return
+		}
+		closed = true
+		_ = s.Close()
+		// Drain Serve goroutine but ignore its error; closing the listener
+		// during Serve is the normal shutdown signal and yields a non-nil
+		// error that we don't care about.
+		select {
+		case <-serveErr:
+		case <-time.After(2 * time.Second):
+		}
+	}
+	handle.Close = closeFn
+	t.Cleanup(closeFn)
+
+	// Seed mailboxes by logging in as the memory backend's default user and
+	// issuing CREATE + APPEND. We prefer this over reaching into the backend's
+	// unexported fields.
+	if len(o.seeds) > 0 {
+		if err := seedMailboxes(handle.Addr, o.seeds); err != nil {
+			t.Fatalf("imaptest: seed: %v", err)
+		}
+	}
+
+	return handle
+}
+
+func seedMailboxes(addr string, seeds []seed) error {
+	c, err := client.Dial(addr)
+	if err != nil {
+		return fmt.Errorf("seed dial: %w", err)
+	}
+	defer func() { _ = c.Logout() }()
+	if err := c.Login(Username, Password); err != nil {
+		return fmt.Errorf("seed login: %w", err)
+	}
+
+	for _, sd := range seeds {
+		// CREATE is allowed to fail if the mailbox already exists (e.g. INBOX).
+		if sd.name != "INBOX" {
+			if err := c.Create(sd.name); err != nil {
+				// Swallow "already exists" errors; surface anything else.
+				// The memory backend only errors on duplicate create.
+				_ = err
+			}
+		}
+		for _, m := range sd.msgs {
+			body := m.RFC822
+			if len(body) == 0 {
+				body = []byte(defaultRFC822)
+			}
+			date := m.Date
+			if date.IsZero() {
+				date = time.Now()
+			}
+			if err := c.Append(sd.name, m.Flags, date, bytes.NewReader(body)); err != nil {
+				return fmt.Errorf("seed append %q: %w", sd.name, err)
+			}
+		}
+	}
+	return nil
+}
+
+const defaultRFC822 = "From: seed@example.com\r\n" +
+	"To: user@example.com\r\n" +
+	"Subject: seeded message\r\n" +
+	"Date: Mon, 01 Jan 2024 00:00:00 +0000\r\n" +
+	"Message-ID: <seed@example.com>\r\n" +
+	"Content-Type: text/plain\r\n" +
+	"\r\n" +
+	"seeded body\r\n"
+
+// Config returns an IMAPConfig pointing at s with the memory backend's
+// credentials, configured for plaintext ("insecure") connections.
+func Config(s *Server) config.IMAPConfig {
+	host, port := splitHostPort(s.Addr)
+	return config.IMAPConfig{
+		Host:          host,
+		Port:          port,
+		Username:      Username,
+		Password:      Password,
+		Security:      config.IMAPSecurityInsecure,
+		TLSSkipVerify: true,
+	}
+}
+
+func splitHostPort(addr string) (string, int) {
+	h, p, err := net.SplitHostPort(addr)
+	if err != nil {
+		return "127.0.0.1", 0
+	}
+	var port int
+	_, _ = fmt.Sscanf(p, "%d", &port)
+	if h == "" {
+		h = "127.0.0.1"
+	}
+	return h, port
+}

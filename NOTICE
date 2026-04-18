@@ -1,0 +1,18 @@
+protoncli
+Copyright 2026 Akeem Jenkins
+
+Licensed under the Apache License, Version 2.0 (the "License").
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+This product includes software developed at the following third-party projects:
+
+- github.com/emersion/go-imap (MIT)
+- github.com/emersion/go-message (MIT)
+- github.com/spf13/cobra (Apache-2.0)
+- github.com/BurntSushi/toml (MIT)
+- modernc.org/sqlite (BSD-3-Clause)
+- golang.org/x/text (BSD-3-Clause)
+
+See each dependency's source for its full license text.
