@@ -1,6 +1,8 @@
-# golangci-lint configuration for personal-proton.
+# golangci-lint configuration for protoncli.
 # Conservative defaults; only enables broadly-agreed-upon linters. Loosened
 # rules are annotated with a comment pointing at the reason.
+
+version: "2"
 
 run:
   timeout: 5m
