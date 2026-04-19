@@ -25,10 +25,6 @@ linters:
     - misspell
 
   settings:
-    goimports:
-      # Kept for when goimports is re-enabled. Groups this module's imports
-      # separately from stdlib and third-party packages.
-      local-prefixes: github.com/akeemjenkins/protoncli
     revive:
       severity: warning
       # Note: rules that frequently fire against existing cobra / httptest

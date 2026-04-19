@@ -84,22 +84,6 @@ signs:
     artifacts: checksum
     output: true
 
-homebrew_casks:
-  - repository:
-      owner: akeemjenkins
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Casks
-    homepage: "https://github.com/akeemjenkins/protoncli"
-    description: "Local-only Proton Mail inbox classifier (IMAP + Ollama)"
-    license: "Apache-2.0"
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    binaries:
-      - protoncli
-    skip_upload: auto
-
 release:
   github:
     owner: akeemjenkins

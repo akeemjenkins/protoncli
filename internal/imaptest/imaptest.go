@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/backend/memory"
 	"github.com/emersion/go-imap/client"
 	"github.com/emersion/go-imap/server"
@@ -141,6 +142,14 @@ func seedMailboxes(addr string, seeds []seed) error {
 				_ = err
 			}
 		}
+		// The emersion memory backend pre-seeds INBOX with a default message
+		// whose internal date is time.Now(). Expunge it so tests that seed
+		// INBOX start from a predictable empty state.
+		if sd.name == "INBOX" {
+			if err := expungeAll(c, sd.name); err != nil {
+				return fmt.Errorf("seed purge %q: %w", sd.name, err)
+			}
+		}
 		for _, m := range sd.msgs {
 			body := m.RFC822
 			if len(body) == 0 {
@@ -154,6 +163,29 @@ func seedMailboxes(addr string, seeds []seed) error {
 				return fmt.Errorf("seed append %q: %w", sd.name, err)
 			}
 		}
+	}
+	return nil
+}
+
+// expungeAll flags every message in mbox as \Deleted and issues EXPUNGE.
+// Used to purge the memory backend's default-seeded INBOX message.
+func expungeAll(c *client.Client, mbox string) error {
+	mboxStatus, err := c.Select(mbox, false)
+	if err != nil {
+		return fmt.Errorf("select: %w", err)
+	}
+	if mboxStatus.Messages == 0 {
+		return nil
+	}
+	seqSet := new(imap.SeqSet)
+	seqSet.AddRange(1, mboxStatus.Messages)
+	item := imap.FormatFlagsOp(imap.SetFlags, true)
+	flags := []interface{}{imap.DeletedFlag}
+	if err := c.Store(seqSet, item, flags, nil); err != nil {
+		return fmt.Errorf("store deleted: %w", err)
+	}
+	if err := c.Expunge(nil); err != nil {
+		return fmt.Errorf("expunge: %w", err)
 	}
 	return nil
 }
