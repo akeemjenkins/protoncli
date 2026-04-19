@@ -9,7 +9,7 @@ run:
   tests: true
 
 linters:
-  disable-all: true
+  default: none
   # NOTE on gofmt/goimports: the existing tree is not uniformly gofmt-clean
   # (struct alignment / tab vs. space tweaks across test files). We rely on
   # CI + editors to keep new code gofmt-ed and do not fail the lint job on
@@ -24,59 +24,61 @@ linters:
     - gosec
     - misspell
 
-linters-settings:
-  goimports:
-    # Kept for when goimports is re-enabled. Groups this module's imports
-    # separately from stdlib and third-party packages.
-    local-prefixes: github.com/akeemjenkins/protoncli
-  revive:
-    severity: warning
-    # Note: rules that frequently fire against existing cobra / httptest
-    # patterns (unused-parameter, redefines-builtin-id, blank-imports,
-    # var-declaration) are intentionally omitted. Re-enable selectively as
-    # the codebase is cleaned up.
+  settings:
+    goimports:
+      # Kept for when goimports is re-enabled. Groups this module's imports
+      # separately from stdlib and third-party packages.
+      local-prefixes: github.com/akeemjenkins/protoncli
+    revive:
+      severity: warning
+      # Note: rules that frequently fire against existing cobra / httptest
+      # patterns (unused-parameter, redefines-builtin-id, blank-imports,
+      # var-declaration) are intentionally omitted. Re-enable selectively as
+      # the codebase is cleaned up.
+      rules:
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: if-return
+        - name: increment-decrement
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        - name: unreachable-code
+    gosec:
+      # Excludes (tune as the codebase evolves):
+      #   G115 — int -> uintN conversions; flagged on deliberate test arithmetic.
+      #   G204 — subprocess with variable args; used deliberately in tests.
+      #   G304 — file inclusion from variable; see also per-path exclude below.
+      #   G306 — WriteFile permission strictness; tests use 0644 intentionally.
+      #   G402 — TLS InsecureSkipVerify; IMAP client exposes an opt-in flag.
+      excludes:
+        - G115
+        - G204
+        - G304
+        - G306
+        - G402
+
+  exclusions:
     rules:
-      - name: context-as-argument
-      - name: context-keys-type
-      - name: error-return
-      - name: error-strings
-      - name: error-naming
-      - name: if-return
-      - name: increment-decrement
-      - name: package-comments
-      - name: range
-      - name: receiver-naming
-      - name: time-naming
-      - name: unexported-return
-      - name: indent-error-flow
-      - name: errorf
-      - name: empty-block
-      - name: superfluous-else
-      - name: unreachable-code
-  gosec:
-    # Excludes (tune as the codebase evolves):
-    #   G115 — int -> uintN conversions; flagged on deliberate test arithmetic.
-    #   G204 — subprocess with variable args; used deliberately in tests.
-    #   G304 — file inclusion from variable; see also per-path exclude below.
-    #   G306 — WriteFile permission strictness; tests use 0644 intentionally.
-    #   G402 — TLS InsecureSkipVerify; IMAP client exposes an opt-in flag.
-    excludes:
-      - G115
-      - G204
-      - G304
-      - G306
-      - G402
+      # Test code legitimately opens files from variables (fixtures, tmp dirs).
+      - path: _test\.go
+        linters:
+          - gosec
+        text: "G304"
+      # Tests frequently ignore returns from helpers (e.g. t.Cleanup funcs).
+      - path: _test\.go
+        linters:
+          - errcheck
 
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
-  exclude-rules:
-    # Test code legitimately opens files from variables (fixtures, tmp dirs).
-    - path: _test\.go
-      linters:
-        - gosec
-      text: "G304"
-    # Tests frequently ignore returns from helpers (e.g. t.Cleanup funcs).
-    - path: _test\.go
-      linters:
-        - errcheck

@@ -73,16 +73,13 @@ sboms:
 
 # Keyless signing via cosign + GitHub OIDC. Signs checksums.txt only;
 # verifying checksums.txt transitively verifies every archive.
+# Uses cosign v2 bundle format: one .sig file contains signature + certificate.
 signs:
   - cmd: cosign
-    env:
-      - COSIGN_EXPERIMENTAL=1
-    certificate: "${artifact}.pem"
     args:
       - sign-blob
       - "--yes"
-      - "--output-certificate=${certificate}"
-      - "--output-signature=${signature}"
+      - "--bundle=${signature}"
       - "${artifact}"
     artifacts: checksum
     output: true
@@ -106,7 +103,7 @@ homebrew_casks:
 release:
   github:
     owner: akeemjenkins
-    name: personal-proton
+    name: protoncli
   draft: false
   prerelease: auto
   mode: append
@@ -115,12 +112,11 @@ release:
     ---
     **Verifying a release**
 
-    1. Download `checksums.txt`, `checksums.txt.sig`, and `checksums.txt.pem`.
+    1. Download `checksums.txt` and `checksums.txt.sig`.
     2. Verify the signature:
        ```sh
        cosign verify-blob \
-         --certificate checksums.txt.pem \
-         --signature   checksums.txt.sig \
+         --bundle      checksums.txt.sig \
          --certificate-identity-regexp 'https://github.com/akeemjenkins/protoncli' \
          --certificate-oidc-issuer     'https://token.actions.githubusercontent.com' \
          checksums.txt
